@@ -10,6 +10,9 @@ defmodule IslandsEngine.Board do
     end
   end
 
+  # gets the list of valid island types from the Island.types/0
+  def all_islands_positioned?(board), do: Enum.all?(Island.types(), &Map.has_key?(board, &1))
+
   defp overlaps_existing_island?(board, new_key, new_island) do
     Enum.any?(board, fn {key, island} ->
       key != new_key and Island.overlaps?(island, new_island)
