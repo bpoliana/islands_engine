@@ -48,6 +48,17 @@ defmodule IslandsEngine.Board do
     |> Island.forested?()
   end
 
+  defp win_check(board) do
+    case all_forested?(board) do
+      true -> :win
+      false -> :no_win
+    end
+  end
+
+  defp all_forested?(board) do
+    Enum.all?(board, fn {_key, island} -> Island.forested?(island) end)
+  end
+
   defp overlaps_existing_island?(board, new_key, new_island) do
     Enum.any?(board, fn {key, island} ->
       key != new_key and Island.overlaps?(island, new_island)
