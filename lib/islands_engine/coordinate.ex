@@ -1,6 +1,8 @@
 defmodule IslandsEngine.Coordinate do
   alias __MODULE__
 
+  alias IslandsEngine.{Coordinate, Island}
+
   @enforce_keys [:row, :col]
   @board_range 1..10
   defstruct [:row, :col]
