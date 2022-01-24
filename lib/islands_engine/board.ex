@@ -65,3 +65,127 @@ defmodule IslandsEngine.Board do
     end)
   end
 end
+
+# Creating 2 islands and positioning them on board
+
+# {:ok, square_coordinate} = Coordinate.new(1,1)
+# {:ok, square} = Island.new(:dot, square_coordinate)
+# Board.position_island(board, :square, square)
+
+# {:ok, new_dot_coordinate} = Coordinate.new(3,3)
+# {:ok, dot} = Island.new(:dot, new_dot_coordinate)
+# Board.position_island(board, :dot, dot)
+# %{
+#   dot: %IslandsEngine.Island{
+#     coordinates: #MapSet<[%IslandsEngine.Coordinate{col: 3, row: 3}]>,
+#     hit_coordinates: #MapSet<[]>
+#   },
+#   square: %IslandsEngine.Island{
+#     coordinates: #MapSet<[
+#       %IslandsEngine.Coordinate{col: 1, row: 1},
+#       %IslandsEngine.Coordinate{col: 1, row: 2},
+#       %IslandsEngine.Coordinate{col: 2, row: 1},
+#       %IslandsEngine.Coordinate{col: 2, row: 2}
+#     ]>,
+#     hit_coordinates: #MapSet<[
+#       %IslandsEngine.Coordinate{col: 1, row: 1},
+#       %IslandsEngine.Coordinate{col: 1, row: 2},
+#       %IslandsEngine.Coordinate{col: 2, row: 1},
+#       %IslandsEngine.Coordinate{col: 2, row: 2}
+#     ]>
+#   }
+# }
+# Guessing a coordinate that does not hit an island
+
+# iex> {:ok, guess_coordinate} = Coordinate.new(10,10)
+# {:ok, %IslandsEngine.Coordinate{col: 10, row: 10}}
+# iex> {:miss, :none, :no_win, board} = Board.guess(board, guess_coordinate)
+# {:miss, :none, :no_win,
+#  %{
+#    square: %IslandsEngine.Island{
+#      coordinates: #MapSet<[
+#        %IslandsEngine.Coordinate{col: 1, row: 1},
+#        %IslandsEngine.Coordinate{col: 1, row: 2},
+#        %IslandsEngine.Coordinate{col: 2, row: 1},
+#        %IslandsEngine.Coordinate{col: 2, row: 2}
+#      ]>,
+#      hit_coordinates: #MapSet<[]>
+#    }
+# }}
+
+# # Guessing a hit coordinate that is part of an island but still does not win the game
+
+# iex> {:ok, hit_coordinate} = Coordinate.new(1,1)
+# {:ok, %IslandsEngine.Coordinate{col: 1, row: 1}}
+# iex> {:hit, :none, :no_win, board} = Board.guess(board, hit_coordinate)
+# {:hit, :none, :no_win,
+#  %{
+#    square: %IslandsEngine.Island{
+#      coordinates: #MapSet<[
+#        %IslandsEngine.Coordinate{col: 1, row: 1},
+#        %IslandsEngine.Coordinate{col: 1, row: 2},
+#        %IslandsEngine.Coordinate{col: 2, row: 1},
+#        %IslandsEngine.Coordinate{col: 2, row: 2}
+#      ]>,
+#      hit_coordinates: #MapSet<[
+#        %IslandsEngine.Coordinate{col: 1, row: 1}
+#      ]>
+#    }
+#  }}
+
+# [Cheat] Making the square`s hit coordinates equal to its coordinates
+# which make it a forested island, and will leave the single coordinate of the dot island
+# as the only unguessed coordinate
+
+# iex(19)> square = %{square | hit_coordinates: square.coordinates}
+# iex(20)> board = Board.position_island(board, :square, square)
+# {:hit, :dot, :win,
+#  %{
+#    dot: %IslandsEngine.Island{
+#      coordinates: #MapSet<[%IslandsEngine.Coordinate{col: 3, row: 3}]>,
+#      hit_coordinates: #MapSet<[%IslandsEngine.Coordinate{col: 3, row: 3}]>
+#    },
+#    square: %IslandsEngine.Island{
+#      coordinates: #MapSet<[
+#        %IslandsEngine.Coordinate{col: 1, row: 1},
+#        %IslandsEngine.Coordinate{col: 1, row: 2},
+#        %IslandsEngine.Coordinate{col: 2, row: 1},
+#        %IslandsEngine.Coordinate{col: 2, row: 2}
+#      ]>,
+#      hit_coordinates: #MapSet<[
+#        %IslandsEngine.Coordinate{col: 1, row: 1},
+#        %IslandsEngine.Coordinate{col: 1, row: 2},
+#        %IslandsEngine.Coordinate{col: 2, row: 1},
+#        %IslandsEngine.Coordinate{col: 2, row: 2}
+#      ]>
+#    }
+#  }}
+# Now, when we guess the dot coordinate, we should get a :hit and :wind
+
+# iex(25)> {:ok, win_coordinate} = Coordinate.new(3,3)
+# {:ok, %IslandsEngine.Coordinate{col: 3, row: 3}}
+
+# iex(29)> board1 =Board.position_island(board, :dot, dot)
+
+# iex(30)> {:hit, :dot, :win, board} = Board.guess(board1, win_coordinate)
+# {:hit, :dot, :win,
+#  %{
+#    dot: %IslandsEngine.Island{
+#      coordinates: #MapSet<[%IslandsEngine.Coordinate{col: 3, row: 3}]>,
+#      hit_coordinates: #MapSet<[%IslandsEngine.Coordinate{col: 3, row: 3}]>
+#    },
+#    square: %IslandsEngine.Island{
+#      coordinates: #MapSet<[
+#        %IslandsEngine.Coordinate{col: 1, row: 1},
+#        %IslandsEngine.Coordinate{col: 1, row: 2},
+#        %IslandsEngine.Coordinate{col: 2, row: 1},
+#        %IslandsEngine.Coordinate{col: 2, row: 2}
+#      ]>,
+#      hit_coordinates: #MapSet<[
+#        %IslandsEngine.Coordinate{col: 1, row: 1},
+#        %IslandsEngine.Coordinate{col: 1, row: 2},
+#        %IslandsEngine.Coordinate{col: 2, row: 1},
+#        %IslandsEngine.Coordinate{col: 2, row: 2}
+#      ]>
+#    }
+#  }}
